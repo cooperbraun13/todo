@@ -38,6 +38,17 @@ router.post('/login', (req, res) => {
   // but we get it back and see it's encrypted, which means that we cannot compare it to the one and the user just used trying to login
   // so what we can do, is again, one way encrypt the password the user just entered
 
+  const { username, password } = req.body
+
+  try {
+    const getUser = db.prepare('SELECT * FROM users WHERE username = ?')
+    const user = getUser.get(username)
+
+    if (!user) {return res.status(404).send({ message: "User not found" })}
+  } catch (err) {
+    console.log(err.message)
+    res.sendStatus(503)
+  }
 });
 
 export default router;
